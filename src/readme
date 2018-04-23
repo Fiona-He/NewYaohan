@@ -1,0 +1,8 @@
+$ ionic cordova plugin add cordova-plugin-camera
+$ npm install --save @ionic-native/camera
+
+$ ionic cordova plugin add cordova-plugin-qrscanner
+$ npm install --save @ionic-native/qr-scanner
+
+$ ionic cordova plugin add phonegap-plugin-barcodescanner
+$ npm install --save @ionic-native/barcode-scanner

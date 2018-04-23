@@ -6,9 +6,57 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content padding [hidden]="QRScaning">
+
+
+
+  <!--<ion-grid>-->
+    <!--<ion-row>-->
+      <!--<ion-col col-4>-->
+        <!--<button ion-button (click)="scanner()">Scanner</button>-->
+      <!--</ion-col>-->
+      <!--<ion-col col-4>-->
+        <!--<button ion-button color="secondary">BackupButton1</button>-->
+      <!--</ion-col>-->
+    <!--</ion-row>-->
+    <!--<ion-row>-->
+      <!--<ion-col col-4><button ion-button color="secondary">BackupButton1</button></ion-col>-->
+      <!--<ion-col col-4><button ion-button color="secondary">BackupButton1</button>s</ion-col>-->
+    <!--</ion-row>-->
+  <!--</ion-grid>-->
+  <button ion-button  block (click)="scanner()">Scanner</button>
+  <button ion-button  block color="secondary">BackupButton1</button>
+  <button ion-button  block color="danger">BackupButton2</button>
+</ion-content>
+
+<ion-content style="background: none transparent;" [hidden]="!QRScaning">
+  <ion-grid style="height: 100%">
+    <ion-row>
+      <ion-col col-12 style="height: 100px;"></ion-col>
+    </ion-row>
+    <ion-row style="height: 220px;">
+      <ion-col col-2></ion-col>
+      <ion-col col-8>
+        <div style="width: 200px;height: 200px;margin:  auto;text-align: center;">
+          <ion-icon style="font-size: 220px; color: #f6f9fa;" name="qr-scanner"></ion-icon>
+        </div>
+      </ion-col>
+      <ion-col col-2></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 style="height: 60px; color:#ffffff; text-align: center;">Place QR Code inside the box</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 style="height: 180px;"></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 style="height: 60px;">
+        <ion-fab right bottom>
+          <button ion-fab style="background-color: #ff6363;" (click)="EndScan()">
+            <ion-icon name="close"></ion-icon>
+          </button>
+        </ion-fab>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
