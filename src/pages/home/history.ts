@@ -35,6 +35,7 @@ export class History implements OnInit{
 
   }
 
+
   dismiss() {
     this.viewCtrl.dismiss();
   }
@@ -64,6 +65,7 @@ export class History implements OnInit{
         let content = JSON.parse(data1.toString());
         this.showData = content;
         console.log("this.showData:",this.showData);
+        refresher.complete();
       });
   }
 
