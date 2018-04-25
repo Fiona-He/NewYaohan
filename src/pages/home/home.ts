@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ModalController} from 'ionic-angular';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 import { HomeService } from "./home.service";
+import { AlertController } from 'ionic-angular';
+import { History} from "./history";
 
 @Component({
   selector: 'page-home',
@@ -11,66 +13,173 @@ import { HomeService } from "./home.service";
 export class HomePage {
 
   QRScaning = false;
-  constructor(public navCtrl: NavController,private qrScanner: QRScanner,private homeService: HomeService) {
+  scanContent = '';
+  scanReference = '';
+  scanMobile = '';
+  scanSub :any;
+  scanType = '';
+  constructor(public navCtrl: NavController,
+              private qrScanner: QRScanner,
+              private homeService: HomeService,
+              private alertCtrl: AlertController,
+              public  modalCtrl: ModalController) {
 
+  }
+
+  reScan() {
+    let alert = this.alertCtrl.create({
+      title: '重新扫描',
+      buttons: [
+        {
+          text: '确定',
+          handler: () => {
+            this.scanner();
+            console.log('reScan clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+  print() {
+    let alert = this.alertCtrl.create({
+      title: '打印中...',
+      buttons: [
+        {
+          text: '确定',
+          handler: () => {
+            console.log('print clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  presentConfirm(text: any) {
+    let couponCode = text;
+    let alert = this.alertCtrl.create({
+      title: 'Confirm purchase',
+      message: '本次扣减优惠券共：'+couponCode+' 元',
+      buttons: [
+        {
+          text: '取消',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+            this.qrScanner.hide();
+            this.QRScaning = false;
+            this.scanSub.unsubscribe();
+            this.EndScan();
+            this.scanner();
+          }
+        },
+        {
+          text: '确认',
+          handler: () => {
+            this.homeService.useCoupon(this.scanContent,this.scanReference).then( data => {
+              let data1 = JSON.stringify(data);
+              let data2 = JSON.parse(data1.toString());
+              if(data2.retcode == '1'){
+                this.print();
+                this.qrScanner.hide();
+                this.QRScaning = false;
+                this.scanSub.unsubscribe();
+                this.EndScan();
+              }
+              else {
+                console.log('失败');
+                this.reScan();
+              }
+            });
+            console.log('Buy clicked');
+
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   scanner(): void{
     console.info("scanner start!");
-
+    this.scanType = '掃描COUPON...';
     // Optionally request the permission early
     this.qrScanner.prepare().then((status: QRScannerStatus) => {
       if (status.authorized) {
-        // camera permission was granted
-
-
-        // show camera preview
         this.QRScaning = true;
-        // start scanning
-        let scanSub = this.qrScanner.scan().subscribe((text: string) => {
-          //console.log('Scanned something', text);
-          alert('succeed:'+text);
-          this.homeService.useCoupon(text).then(data=>{
-            if(data == 1){
-              alert("使用成功，开始打印...");
-              this.qrScanner.hide(); // hide camera preview
-              this.QRScaning = false;
-              scanSub.unsubscribe(); // stop scanning
-            }
-            else{
-              alert("失败，请重新尝试！");
-            }
-          });
-          // this.homeService.useCoupon2(text);
-          // alert("使用成功，开始打印...");
-          // this.qrScanner.hide(); // hide camera preview
-          // this.QRScaning = false;
-          // scanSub.unsubscribe(); // stop scanning
+        this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
+          let data = JSON.parse(text.toString());
+          this.scanContent = data.data.toString();
+          this.scanReference = data.reference.toString();
+          this.homeService.checkCouponTotal(this.scanContent,this.scanReference).then(
+            data => {
+              let data1 = JSON.stringify(data);
+              let data2 = JSON.parse(data1.toString());
+              let total = data2.total;
+              this.presentConfirm(total);
+            });
+
         });
 
         this.qrScanner.show();
 
-        //this.QRScaning = true;
-        // wait for user to scan something, then the observable callback will be called
-
       } else if (status.denied) {
-        // camera permission was permanently denied
-        // you must use QRScanner.openSettings() method to guide the user to the settings page
-        // then they can grant the permission from there
       } else {
-        // permission was denied, but not permanently. You can ask for permission again at a later time.
       }
     })
       .catch((e: any) => console.log('Error is', e));
   }
 
-
-
-
   EndScan():void {
     this.qrScanner.hide();
     this.qrScanner.destroy();
     this.QRScaning = false;
+  }
+
+  refund(){
+    console.info("refund scanner start!");
+    this.scanType = '退COUPON...';
+    this.qrScanner.prepare().then((status: QRScannerStatus) => {
+      if (status.authorized) {
+        this.QRScaning = true;
+        this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
+          this.scanMobile = text.toString();
+          alert(this.scanMobile);
+
+          // this.homeService.showHistory(this.scanMobile).then(
+          //   data => {
+          //     alert(data);
+          //     let data1 = JSON.stringify(data);
+          //     let content = JSON.parse(data1.toString());
+          //     this.qrScanner.hide();
+          //     this.QRScaning = false;
+          //     this.scanSub.unsubscribe();
+          //     let modal = this.modalCtrl.create(History,content);
+          //     modal.present();
+          //
+          //   });
+          let content = {
+              data:[
+                {date:'20180101',time:'17:05:15',total:'200',reference:'180423154801286'},
+                {date:'20180102',time:'17:05:15',total:'200',reference:'292929292929292'},
+                {date:'20180103',time:'17:05:15',total:'200',reference:'292929292929292'},
+                {date:'20180104',time:'17:05:15',total:'200',reference:'292929292929292'}
+              ]
+          };
+          let modal = this.modalCtrl.create(History,content);
+          modal.present();
+
+
+        });
+
+        this.qrScanner.show();
+
+      } else if (status.denied) {
+      } else {
+      }
+    })
+      .catch((e: any) => console.log('Error is', e));
   }
 
 }

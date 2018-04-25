@@ -7,6 +7,7 @@ import { QRScanner } from '@ionic-native/qr-scanner';
 import { Camera } from '@ionic-native/camera';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { History} from "../pages/home/history";
 import { HttpClientModule } from '@angular/common/http';
 import { HomeService } from "../pages/home/home.service";
 
@@ -14,7 +15,8 @@ import { HomeService } from "../pages/home/home.service";
   declarations: [
     MyApp,
     HomePage,
-    HomeService
+    HomeService,
+    History
   ],
   imports: [
     BrowserModule,
@@ -24,7 +26,8 @@ import { HomeService } from "../pages/home/home.service";
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    History
   ],
   providers: [
     StatusBar,

@@ -24,15 +24,15 @@
       <!--<ion-col col-4><button ion-button color="secondary">BackupButton1</button>s</ion-col>-->
     <!--</ion-row>-->
   <!--</ion-grid>-->
-  <button ion-button  block (click)="scanner()">Scanner</button>
-  <button ion-button  block color="secondary">BackupButton1</button>
+  <button ion-button  block (click)="scanner()">扫描Coupon</button>
+  <button ion-button  block color="secondary" (click)="refund()">退Coupon</button>
   <button ion-button  block color="danger">BackupButton2</button>
 </ion-content>
 
 <ion-content style="background: none transparent;" [hidden]="!QRScaning">
   <ion-grid style="height: 100%">
     <ion-row>
-      <ion-col col-12 style="height: 100px;"></ion-col>
+      <ion-col col-12 style="height: 100px;">{{scanType}}</ion-col>
     </ion-row>
     <ion-row style="height: 220px;">
       <ion-col col-2></ion-col>
@@ -54,6 +54,15 @@
         <ion-fab right bottom>
           <button ion-fab style="background-color: #ff6363;" (click)="EndScan()">
             <ion-icon name="close"></ion-icon>
+          </button>
+        </ion-fab>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 style="height: 60px;">
+        <ion-fab left bottom>
+          <button ion-fab style="background-color: #ff6363;" (click)="scanner()">
+            <ion-icon name="refresh"></ion-icon>
           </button>
         </ion-fab>
       </ion-col>
