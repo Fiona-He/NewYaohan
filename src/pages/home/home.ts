@@ -25,18 +25,6 @@ export class HomePage {
               public  modalCtrl: ModalController) {
 
   }
-  // rescanner(type: any){
-  //   if(type == '掃描COUPON...'){
-  //     console.log('rescanner .. This.reScan');
-  //     this.reScan();
-  //   }
-  //
-  //   if(type == '掃描COUPON...'){
-  //     console.log('rescanner .. This.reScanRefund');
-  //     this.reScanRefund();
-  //   }
-  //
-  // }
 
   reScan() {
     let alert = this.alertCtrl.create({
@@ -55,22 +43,7 @@ export class HomePage {
     alert.present();
   }
 
-  reScanRefund() {
-    let alert = this.alertCtrl.create({
-      title: '重新扫描',
-      buttons: [
-        {
-          text: '确定',
-          handler: () => {
-            this.EndScan;
-            this.refund();
-            console.log('reScan clicked');
-          }
-        }
-      ]
-    });
-    alert.present();
-  }
+
   print() {
     let alert = this.alertCtrl.create({
       title: '打印中...',
@@ -175,7 +148,7 @@ export class HomePage {
         this.QRScaning = true;
         this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
           this.scanMobile = text.toString();
-          alert(this.scanMobile);
+          //alert(this.scanMobile);
           let modal = this.modalCtrl.create(History,{content:this.scanMobile});
           modal.onDidDismiss(() => {
             //this.reScanRefund();
@@ -196,16 +169,6 @@ export class HomePage {
       .catch((e: any) => console.log('Error is', e));
   }
 
-  test(){
-    this.homeService.test().then(
-      data => {
-        alert(data);
-        console.log(data);
-        console.log(Object(data));
-        let data1 = JSON.stringify(data);
-        let content = JSON.parse(data1.toString());
-        console.log("this.showData:",content);
-      });
-  }
+
 
 }
