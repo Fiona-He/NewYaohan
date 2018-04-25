@@ -11,19 +11,29 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content padding>
-  <div class="container">
-      <ion-list *ngFor="let sd of showData">
-        <ion-item-sliding >
-          <ion-item >
-            <h4>使用时间：<strong>{{sd.date}}</strong> - {{sd.time}}</h4>
-            <h3>現金券總值：<strong style="color: red">{{sd.total}}</strong> 元</h3>
-          </ion-item>
-          <ion-item-options side="right">
-            <button ion-button (click)="doRefund(sd)" >退回</button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </div>
 
+<ion-content padding>
+  <ion-refresher
+    pulling-text="Pull to refresh..."
+    (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div class="container">
+    <ion-list *ngFor="let sd of showData">
+      <ion-item-sliding >
+        <ion-item >
+          <h4>使用时间：<strong>{{sd.date}}</strong> - {{sd.time}}</h4>
+          <h3>現金券總值：<strong style="color: red">{{sd.total}}</strong> 元</h3>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button (click)="doRefund(sd)" >退回</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
 </ion-content>

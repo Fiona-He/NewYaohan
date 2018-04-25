@@ -25,6 +25,18 @@ export class HomePage {
               public  modalCtrl: ModalController) {
 
   }
+  // rescanner(type: any){
+  //   if(type == '掃描COUPON...'){
+  //     console.log('rescanner .. This.reScan');
+  //     this.reScan();
+  //   }
+  //
+  //   if(type == '掃描COUPON...'){
+  //     console.log('rescanner .. This.reScanRefund');
+  //     this.reScanRefund();
+  //   }
+  //
+  // }
 
   reScan() {
     let alert = this.alertCtrl.create({
@@ -33,7 +45,25 @@ export class HomePage {
         {
           text: '确定',
           handler: () => {
+            this.EndScan;
             this.scanner();
+            console.log('reScan clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  reScanRefund() {
+    let alert = this.alertCtrl.create({
+      title: '重新扫描',
+      buttons: [
+        {
+          text: '确定',
+          handler: () => {
+            this.EndScan;
+            this.refund();
             console.log('reScan clicked');
           }
         }
@@ -146,31 +176,15 @@ export class HomePage {
         this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
           this.scanMobile = text.toString();
           alert(this.scanMobile);
-
-          // this.homeService.showHistory(this.scanMobile).then(
-          //   data => {
-          //     alert(data);
-          //     let data1 = JSON.stringify(data);
-          //     let content = JSON.parse(data1.toString());
-          //     this.qrScanner.hide();
-          //     this.QRScaning = false;
-          //     this.scanSub.unsubscribe();
-          //     let modal = this.modalCtrl.create(History,content);
-          //     modal.present();
-          //
-          //   });
-          let content = {
-              data:[
-                {date:'20180101',time:'17:05:15',total:'200',reference:'180423154801286'},
-                {date:'20180102',time:'17:05:15',total:'200',reference:'292929292929292'},
-                {date:'20180103',time:'17:05:15',total:'200',reference:'292929292929292'},
-                {date:'20180104',time:'17:05:15',total:'200',reference:'292929292929292'}
-              ]
-          };
-          let modal = this.modalCtrl.create(History,content);
+          let modal = this.modalCtrl.create(History,{content:this.scanMobile});
+          modal.onDidDismiss(() => {
+            //this.reScanRefund();
+            this.qrScanner.hide();
+            this.QRScaning = false;
+            this.scanSub.unsubscribe();
+            this.EndScan();
+          });
           modal.present();
-
-
         });
 
         this.qrScanner.show();
@@ -180,6 +194,18 @@ export class HomePage {
       }
     })
       .catch((e: any) => console.log('Error is', e));
+  }
+
+  test(){
+    this.homeService.test().then(
+      data => {
+        alert(data);
+        console.log(data);
+        console.log(Object(data));
+        let data1 = JSON.stringify(data);
+        let content = JSON.parse(data1.toString());
+        console.log("this.showData:",content);
+      });
   }
 
 }
